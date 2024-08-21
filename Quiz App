@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #quiz-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        .question {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+        .options li {
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <h2 id="question">Question text</h2>
+    <ul class="options">
+        <li><button onclick="selectOption(0)">Option 1</button></li>
+        <li><button onclick="selectOption(1)">Option 2</button></li>
+        <li><button onclick="selectOption(2)">Option 3</button></li>
+        <li><button onclick="selectOption(3)">Option 4</button></li>
+    </ul>
+    <button id="next-button" onclick="nextQuestion()" disabled>Next Question</button>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "What is the capital of France?",
+            options: ["Berlin", "London", "Paris", "Rome"],
+            answer: 2
+        },
+        {
+            question: "Which planet is known as the Red Planet?",
+            options: ["Earth", "Mars", "Jupiter", "Saturn"],
+            answer: 1
+        },
+        {
+            question: "What is the largest mammal in the world?",
+            options: ["Elephant", "Blue Whale", "Great White Shark", "Giraffe"],
+            answer: 1
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+        const questionElement = document.getElementById('question');
+        const optionsButtons = document.querySelectorAll('.options button');
+        const nextButton = document.getElementById('next-button');
+
+        questionElement.textContent = questions[currentQuestion].question;
+        optionsButtons.forEach((button, index) => {
+            button.textContent = questions[currentQuestion].options[index];
+            button.disabled = false;
+        });
+
+        nextButton.disabled = true;
+    }
+
+    function selectOption(selectedOption) {
+        const correctOption = questions[currentQuestion].answer;
+        const optionsButtons = document.querySelectorAll('.options button');
+        const nextButton = document.getElementById('next-button');
+
+        if (selectedOption === correctOption) {
+            score++;
+        }
+
+        optionsButtons.forEach((button, index) => {
+            button.disabled = true;
+            if (index === correctOption) {
+                button.style.backgroundColor = '#28a745';
+            } else if (index === selectedOption) {
+                button.style.backgroundColor = '#dc3545';
+            }
+        });
+
+        nextButton.disabled = false;
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+
+        if (currentQuestion < questions.length) {
+            loadQuestion();
+        } else {
+            showFinalScore();
+        }
+    }
+
+    function showFinalScore() {
+        const quizContainer = document.getElementById('quiz-container');
+        quizContainer.innerHTML = `
+            <h2>Your final score is ${score}/${questions.length}</h2>
+            <button onclick="location.reload()">Restart Quiz</button>
+        `;
+    }
+
+    // Initialize the quiz
+    loadQuestion();
+</script>
+
+</body>
+</html>
